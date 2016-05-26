@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="de">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>CressInt: A. thaliana functional genomics intersection tool</title>
+
+		<meta name="description" content="CressInt: A. thaliana functional genomics intersection tool">
+		<meta name="keywords" content="cressint cchmc weirauch lab weirauch lab">
+		<meta name="keywords" content="functional genomics arabidopsis thaliana intersection analysis tool">
+		<meta name="keywords" content="cincinnati children's hospital medical center">
+		<meta name="author" content="Kevin Ernst">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/mine.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/sunburst.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css'
+                                                                : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+  <body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides"> 
+				<section>
+          <section data-background="img/pexels_meadow-grass-sunshine-9056.jpg">
+            <h1 class="bar" style="text-transform:none;">
+              <!-- <a href="https://cressint.cchmc.org/cressint/">CressInt</a> -->
+              CressInt
+            </h1>
+            <h2 class="bar">&hellip;what makes a web-based analysis tool tick</h2>
+            <!--p>
+              A web-based <em>A. thaliana</em> functional genomics<br>intersection
+              tool, examined at the protocol level -->
+            <p>
+              <a href="http://www.cincinnatichildrens.org/research/divisions/a/genomics-etiology/labs/weirauch/default/">
+                Weirauch Transcription Factor Research Lab</a><br>
+              <small>
+                Center for Autoimmune Genomics and Etiology<br>
+                Cincinnati Children's Hospital Medical Center
+              </small>
+            </p>
+
+            <small>
+              <a href="mailto:Kevin.Ernst@cchmc.org">Kevin Ernst</a> /
+              <a href="http://twitter.com/ernstki">@ernstki</a><br><br>
+              slides: <a href="https://tf.cchmc.org/s/fosem2016">tf.cchmc.org/s/fosem2016</a>
+            </small>
+          </section>
+          <section data-background="img/pexels_meadow-grass-sunshine-9056.jpg">
+            <h1 class="bar" style="text-transform:none;">
+              The Horrors
+            </h1>
+            <h2 class="bar">
+              &hellip;of building a web-based analysis tool on top of legacy
+              Perl code
+            </h2>
+            <p style="padding:0 3em;">
+              or, <em><span class="fragment">What Happens When All the Graduate
+              Students You Had Working on a Project Critical to Your Lab</span>
+              <span class="fragment">Graduate </span> <span class="fragment">
+              but the New Guy Says He Knows <span class="fragment
+                highlight-green">'Some Web Stuff'</span></span></em>
+            </p>
+          </section>
+				</section>
+
+				<section data-background="img/inra_dist_22587436872.jpg">
+
+					<section>
+						<h2 class="bar">About Your Presenter</h2>
+						<p>
+              Computer Science Undergraduate<br>at the University of
+              Cincinnati<br>
+              <span class="fragment">
+                <small>minoring in Anthropology</small>
+              </span>
+            </p>
+            <ul>
+              <li class="fragment">not a doctor, not even <a
+                href="http://mentalfloss.com/article/56279/who-originally-said-im-not-doctor-i-play-one-tv">on
+                TV</a>
+              </li>
+              <li class="fragment">a "generalist"</li>
+              <li class="fragment">find joy in working on things that are hopelessly broken</li>
+              <li class="fragment">take correction well</li>
+            </ul>
+            <!-- <table style="margin:0 1.5em"><tbody> -->
+            <!--   <tr><td>Hauptfach:</td><td>Informatik (BS)</td></tr> -->
+            <!--   <tr><td>Nebenfach:</td><td>Anthropologie</td></tr> -->
+            <!--   <tr><td>Abschluß:</td><td>Mai 2017</td></tr> -->
+            <!-- </tbody></table> -->
+					</section>
+
+					<section>
+						<h2 class="bar">The Weirauch Lab</h2>
+            <p class="more-padding">
+              The Weirauch Lab Studies mechanisms of gene transcriptional
+              regulation, with a focus on <a href="https://en.wikipedia.org/wiki/Transcription_factor">
+              transcription factors</a>
+            </p>
+            <p class="more-padding fragment">
+              and how they relate to the origins of diseases in
+              humans (<em>e.g., systemic lupus erythematosus</em>)
+            </p>
+            <p class="more-padding fragment"><small>We are between 3 and
+              8 people, depending on the season</small></p>
+					</section>
+
+          <section>
+            <h2 style="bar">Probing the boundaries of human knowledge</h2>
+            <ul style="list-style-type:none;padding-left:none;text-align:center;">
+              <li class="fragment" style="display:inline-block">
+                <img style="width:280px;height:auto"
+                src="http://matt.might.net/articles/phd-school-in-pictures/images/PhDKnowledge.007.jpg">
+              </li>
+              <li class="fragment" style="display:inline-block">
+                <img style="width:280px;height:auto"
+                src="http://matt.might.net/articles/phd-school-in-pictures/images/PhDKnowledge.010.jpg">
+              </li>
+              <li class="fragment" style="display:inline-block">
+                <img style="width:280px;height:auto"
+                src="http://matt.might.net/articles/phd-school-in-pictures/images/PhDKnowledge.011.jpg">
+              </li>
+              <li class="fragment" style="display:inline-block">
+                <img style="width:280px;height:auto"
+                src="http://matt.might.net/articles/phd-school-in-pictures/images/PhDKnowledge.012.jpg">
+              </li>
+            </ul>
+            <small>Source: <a href="http://matt.might.net/articles/phd-school-in-pictures/">
+              Matt Might's blog</a></small>
+          </section>
+
+        </section><!-- the Weirauch Lab -->
+
+        <section data-background="img/electrophoresis.jpg">
+
+          <section>
+            <h1 class="bar">CressInt</h1>
+            <h3 class="bar">A genomics coordinate intersection tool
+              for plant biologists</h3>
+            <ul>
+              <li class="fragment">Manuscript in Sep 2015 <em>Current Plant
+                Biology</em></li>
+              <li class="fragment">
+                Built on code base of two existing analysis tools
+                <ul>
+                  <li>BedIntersector (Weirauch Lab)</li>
+                  <li>
+                    <a href="https://www.broadinstitute.org/mpg/snpsea/">SNPsea</a>
+                    (Broad Inst.)
+                  </li>
+                </ul>
+              </li>
+              <li class="fragment">CressInt accepts BED format coordinates or
+                gene names <span class="fragment">(FASTA input still in
+                progress)</span></li>
+              <li class="fragment">Intersects input coordinates with <a
+                href="https://cressint.cchmc.org/cressint/datasources.php">several
+                dozen data sets</a> to identify "regions of interest"</li>
+              <!--li class="fragment">thus commenced a tale of
+                <a href="http://c2.com/cgi/wiki?LazinessImpatienceHubris">
+                laziness, impatience, and hubris</a></li-->
+            </ul>
+          </section>
+
+          <section>
+            <h2 class="bar">"Regions of Interest"</h2>
+            <blockquote>
+              CressInt incorporates a variety of genome-wide data types relevant
+              to gene regulation, including transcription factor (TF) binding
+              site models, ChIP-seq, DNase-seq, eQTLs, and GWAS.
+            </blockquote>
+
+            <h3 class="fragment">Use cases</h3>
+            <ul class="fragment">
+              <li>Identify TFs binding to the promoter of a gene of
+              interest;</li>
+              <li> identify genetic variants that are likely to impact TF
+              binding based on a ChIP-seq dataset;</li>
+              <li>identify specific TFs whose binding might be impacted by
+              phenotype-associated variants.</li>
+            </ul>
+            <p><small>
+              Source: <a href="https://cressint.cchmc.org/cressint/faq.php#what-is-cressint">CressInt
+              FAQ</a>
+            </small></p>
+          </section>
+
+          <section>
+            <h2 class="bar">BED file format</h2>
+            <p class="">Tab-delimited format which describes locations within chromosomes
+            of regions of interest.</p>
+            <pre><code class="nohighlight" style="background:black">
+
+    chr1    11873    14409    uc001aaa.3    0    
+
+            </code></pre>
+            <p class="fragment">
+             Specification describes up to 6 columns (BED6):<br>
+              chr, start, stop, label, score, and strand (+/-)
+            </p>
+            <small>UCSC Genome Browser
+              <a href="http://www.genome.ucsc.edu/FAQ/FAQformat.html">FAQ entry
+                on BED file format</a>
+            </small>
+          </section>
+
+          <!--section>
+            <h2 class="bar">Design Planning Meetings</h2>
+            <p class="pad-me fragment">"Hey Dr. Weirauch, should I add <code>&lt;some new
+            feature that is certain to add unnecessary complexity&gt;</code>"</p>
+            <p class="pad-me fragment">"Sure, as long as things aren't broken
+            when you're done."</p>
+          </section-->
+
+          <section>
+            <h2 class="bar">Application Design</h2>
+            <p>
+              CressInt was developed continuously Mar - Apr 2015<span
+              class="fragment">, with another large burst in
+              August</span><span class="fragment"> around the time of final
+              exams <code>:(</code></span>
+            </p>
+            <img class="fragment" style="/*height:500px;width:auto*/"
+             src="http://www.phdcomics.com/comics/archive/phd072508s.gif">
+             <p class="fragment more-padding">
+               <small><em>Hey boss, should I <span style="color:#666">&lt;long-winded
+               description of some trivial problem, one workable solution, and
+               three unworkable ones&gt;</span>?</em></small>
+             </p>
+             <p class="fragment"><em>Do it. (send)</em></p>
+          </section>
+        </section> <!-- Problem Description -->
+
+        <section class="embed" data-state="embed"
+         data-background-iframe="https://cressint.cchmc.org">
+        </section>
+
+				<section data-background="img/gel_electrophoresis_gradient.jpg">
+          <section style="background:rgba(0,0,0,0.6)">
+            <h2 class="bar">Basic Application Architecture</h2>
+            <pre style="box-shadow:none"><!--code style="asciidoc"-->
++ - - - - - - - - - - +       +----------------------+        +----------------------+
+                              | +----\               |        |                      |
+|      Web user       |       | |     \-------+      |        +----------------------+
+      interface               | |             |      |        |                      |
+|                     |       | |/var/www/html|      |        +----------------------+
+    +-------------+           | |             |      | +----->|  LSF (HPC cluster)   |
+|   |             |   |       | +-------------+      | |      +----------------------+
+    +-------------+           |     +------------+   | |      |                      |
+|   +-------------+   |       |     |            |   | |      +----------------------+
+    |             |        +--+---->|  Perl CGI  |---+-+      |          .           |
+|   +-------------+   |    |  |     |            |   |        |          .           |
+         +--------+        |  |     +------------+   |        |          .           |
+|        | Submit |---+----+  |                      |        +----------------------+
+         +--------+           +----------------------+
+|                     |   +---|    FastCGI / PHP     +---+
+ - - - - - - - - - - -    |   +----------------------+   |    +----------------------+
+           ^              |   |      Apache 2.2      |   |    |                      |
+           |              |   +----------------------+   +--->|      MySQL 5.x       |
+           +--------------+   |                      |        |                      |
+                              |    CentOS 6 (OS)     |        +----------------------+
+                              |                      |        |        CentOS        |
+                              +----------------------+        +----------------------+
+            <!--/code--></pre>
+          </section>
+
+          <section>
+            <h2 class="bar">Why (on Earth) Perl and PHP?</h2>
+            <ul style="padding:0 1em">
+              <li class="">Lab history / tribal knowledge</li>
+              <li class="fragment">Perl + CGI.pm = simple forms processing</li>
+              <li class="fragment">PHP &rarr; HTML relatively straightforward</li>
+              <li class="fragment">
+                Desire to leave behind something maintainable<span
+                class="fragment"><span class="fragment highlight-red"> by the
+                next intern / grad student</span></span>
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h1 class="bar">Perl</h1>
+            <pre><code class="perl">
+
+    #!/usr/bin/env perl
+
+    $"x=$%="@ARGV";$~=$;='(  +)';while($%>>$:++){if($"=~/$~$/^$"=~/$;$/){$
+    |=$?=$:>2||die"prime\n";eval"print length(\$$?)".($:>++$?&&"/length(\$
+    $?).'*'")while$:>$?;die$/}$;=$~;$~=~s~.*~^($&\\1+)~;$~=~s;\d+;1+$&;eg}
+
+            </code></pre>
+            <p class="">Perl <em>can</em> look like line noise.</p>
+            <p class="fragment">The object system was bolted-on as an afterthought.</p>
+            <p class="fragment">At least the Perl language is not a moving
+            target.</p>
+            <p class="fragment"><small>
+              But a single Perl <a
+                href="https://en.wikipedia.org/wiki/Common_Gateway_Interface">CGI</a> <em>cannot</em> handle
+              1000s of requests per second
+            </small></p>
+            <small>
+              Source: <a href="http://www.perlmonks.org/?node=Obfuscated%20Code">
+              perlmonks.org</a>
+            </small>
+          </section>
+
+          <section>
+            <h2 class="bar">PHP (sigh)</h2>
+            <pre><code>
+    &lt;?php
+
+        // Loop infinitely and fill up '/' with a 5 GB Apache access_log
+        $fh = fopen("doesntexist.txt", "r");
+        while (!feof($fh)) echo "TURTLES!\n";
+
+    ?&gt;
+            </code></pre>
+            <pre><code class="asciidoc">
+    TURTLES!
+    PHP Warning:  feof() expects parameter 1 to be resource, boolean [...]
+    TURTLES!
+    PHP Warning:  feof() expects parameter 1 to be resource, boolean [...]
+    TURTLES!
+    PHP Warning:  feof() expects parameter 1 to be resource, boolean [...]
+    TURTLES!
+    PHP Warning:  feof() expects parameter 1 to be resource, boolean [...]
+    TURTLES!^C
+            </code></pre>
+
+            <p>
+            <code>feof()</code> returns <code>TRUE</code> if the file pointer is
+            at <code>EOF</code> or an error occurs (including socket timeout);
+            otherwise returns <code>FALSE</code>.
+            </p>
+
+            <small>Reference: PHP manual <code><a
+            href="http://php.net/manual/en/function.feof.php">feof()</a></code>
+            </small>
+          </section>
+
+          <section>
+            <h2 class="bar">JavaScript</h2>
+            <img src="img/xena_javascript.jpg">
+          </section>
+
+          <section>
+            <h2 class="bar">JavaScript (sigh)</h2>
+            <img src="img/watman.png">
+            <small>Source: Gary Bernhardt's <a
+                href="https://www.destroyallsoftware.com/talks/wat">
+                "WAT" lightning talk</a>
+            </small>
+          </section>
+
+				</section>
+
+        <section data-background="img/blueridgekitties_3836211195.jpg">
+          <section>
+            <h1 class="bar">Plumbing</h1>
+            <ul>
+              <li class="nofragment">Browser pages are served by Apache/PHP
+                <ul>
+                  <li class="fragment">using <a
+                    href="http://twig.sensiolabs.org/">Twig</a> template engine
+                    <span class="fragment"> - <a target="_blank"
+                    href="https://bitbucket.org/weirauchlab/tf-tools-cressint/src/f4c15215987ec2a3177d439c7a2fc6beb3298bf5/faq.php?fileviewer=file-view-default#faq.php-10">who</a>
+                    <a target="_blank" href="https://bitbucket.org/weirauchlab/tf-tools-cressint/src/f4c15215987ec2a3177d439c7a2fc6beb3298bf5/templates/faq.html.twig?at=master&fileviewer=file-view-default#faq.html.twig-10">cares?</a>
+                    </span>
+                  </li>
+                  <li class="fragment">Separates presentation from logic
+                  (<a target="_blank"
+                    href="https://bitbucket.org/weirauchlab/tf-tools-cressint/src/f4c15215987ec2a3177d439c7a2fc6beb3298bf5/tairgenes.php?at=master&fileviewer=file-view-default#tairgenes.php-1">otherwise</a>)</li>
+                </ul>
+              </li>
+              <li class="fragment">
+                Gene names are queried from a MySQL database asynchronously
+                <ul>
+                  <li class="fragment">the cool kids call this "<a
+                    href="https://en.wikipedia.org/wiki/Ajax_(programming)">Ajax</a>"
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 class="bar">Plumbing (cont'd)</h2>
+            <ul>
+              <li class="fragment">Form inputs are submitted to a Perl <a
+                href="https://en.wikipedia.org/wiki/Common_Gateway_Interface">CGI</a>
+                <ul>
+                  <li class="fragment">also async, using JavaScript <span
+                    class="fragment">- <a target="_blank"
+                      href="https://bitbucket.org/weirauchlab/tf-tools-cressint/src/f4c15215987ec2a3177d439c7a2fc6beb3298bf5/js/formsubmit.js?at=master&fileviewer=file-view-default#formsubmit.js-95">so
+                      what?</a></span></li>
+                </ul>
+              </li>
+              <li class="fragment">form inputs validated by <a
+                target="_blank"
+                href="https://bitbucket.org/weirauchlab/tf-tools-cressint/src/f4c15215987ec2a3177d439c7a2fc6beb3298bf5/cressint.cgi?at=master&fileviewer=file-view-default#cressint.cgi-134">HTTP
+                response</a> from the CGI script</li>
+              <li class="fragment">Perl CGI submits job to HPC cluster on behalf
+                of the user</li>
+                <li class="fragment">Results page <a target="_blank"
+                  href="https://bitbucket.org/weirauchlab/tf-tools-cressint/src/f4c15215987ec2a3177d439c7a2fc6beb3298bf5/display.php?at=master&fileviewer=file-view-default#display.php-172">refreshes
+                  continuously</a> until job
+                is done</li>
+              <li class="fragment">PHP + Twig templates again used to render
+                (tabular) results</li>
+            </ul>
+          </section>
+
+          <section>
+            <h1 class="bar">Let's Explore</h1>
+            <ul>
+              <li class="fragment shrink">Web browser loads a web page</li>
+              <li class="fragment shrink">Expand-o-sections (CSS animation)</li>
+              <li class="fragment shrink">JavaScript click event that sets a cookie</li>
+              <li class="fragment shrink">Live search for gene names</li>
+              <li class="fragment shrink">Ajax (async) job submission</li>
+              <li class="fragment shrink">Submitting a job to LSF (HPC cluster)</li>
+              <li class="fragment shrink">Refreshing results page until cluster job is done</li>
+            </ul>
+          </section>
+        </section>
+
+				<section data-background="img/inra_dist_22612133671.jpg">
+
+          <section>
+            <h1 class="bar">Lessons Learned</h1>
+            <ul>
+              <li class="fragment">Life is tough for a brand new PI, in
+                a new lab
+                <ul>
+                <li class="fragment">Enforcing, for example, coding
+                  standards</li>
+                  <li class="fragment">Maintaining continuity on long-term
+                  projects
+                  </li>
+                  <li class="fragment">Having to say "no"</li>
+                </ul>
+              </li>
+              <li class="fragment">
+                Strive to make yourself <span class="fragment
+                highlight-red">dis</span>pensable
+                <ul>
+                  <li class="fragment">self-generating documentation w/ <a
+                    href="http://doxygen.org/">Doxygen</a>; wikis</li>
+                </ul>
+              </li>
+              <li class="fragment">Automate</li>
+              <li class="fragment">Try to avoid shiny things</li>
+            </ul>
+          </section>
+
+					<section>
+						<h1 class="bar">Future Directions</h1>
+            <ul>
+              <li class="fragment">Unit testing and uptime monitoring
+              <ul>
+                <li class="fragment">Stop wondering: <em>Is CressInt broken today?</em></li>
+                <li class="fragment">and: <em>Will the changes in this library
+                  break X?</em></li>
+              </ul>
+              </li>
+              <li class="fragment">Logging &amp; "analytics"</li>
+              <ul>
+                <li class="fragment">Pay attention to how users are using the
+                system and where failures happen</li>
+              </ul>
+              <li class="fragment">Authentication, private saved jobs</li>
+              <li class="fragment">More efficient parallelization
+                <ul>
+                  <li>LSF job arrays</li>
+                  <li>GNU Parallel (<a
+                    href="https://www.youtube.com/playlist?list=PL284C9FF2488BC6D1">youtube.com</a>)
+                  </li>
+                </ul>
+              </li>
+              <li class="fragment">Client / server architecture to handle
+                incoming requests</li>
+              <li class="fragment">Command-line management (housekeeping) tools</li>
+            </ul>
+					</section>
+
+          <section>
+            <h2 class="bar">Future Directions (cont'd)</h2>
+            <h3>Improved application architecture:<br>dispatch requests to a queue runner</h3>
+            <ul>
+              <li class="fragment">Rate limiting / throttling based on user
+                "class"</li>
+              <li class="fragment">Cluster balance monitoring</li>
+              <li class="fragment">REST API for monitoring job status</li>
+              <li class="fragment">Email notifications</li>
+            </ul>
+          </section>
+
+        </section> <!-- Lessons Learned -->
+
+        <section data-background="img/inra_dist_22726188208.jpg">
+          <section>
+            <h1 class="bar">Credits</h1>
+            <h3>The Team</h3>
+            <ul>
+              <li><a href="Matthew.Weirauch@cchmc.org">Dr. Matthew Weirauch</a>
+                - <em>Principal Investigator</em></li>
+              <li><a href="chenxt@mail.uc.edu">Dr. Xiaoting Chen</a> - <em>Lead
+                Programmer / Analyst</em></li>
+              <li><a href="Kevin.Ernst@cchmc.org">Kevin Ernst</a>
+                - <em>Developer / Sysadmin</em></li>
+              <li><a href="somanfl@mail.uc.edu">Frances Soman</a>
+                - <em>code contributor</em></li>
+              <li><a href="borowczak@gmail.com">Dr. Michael Borowczak</a>
+                - <em>BedInt author; technical advisor</em></li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 class="bar">Credits (cont'd)</h2>
+            <h3>Images</h3>
+            <ul>
+              <li>Flickr user <a
+                href="https://www.flickr.com/photos/blueridgekitties">blueridgekitties</a></li>
+              <li>Flickr user <a
+                href="https://www.flickr.com/photos/71183136@N08">Science and
+                Plants for Schools</a></li>
+              <li><a href="https://www.flickr.com/photos/inra_dist/">
+                Institut national de la recherche agronomique</a> (INRA)
+              </li>
+              <li><a
+                href="https://commons.wikimedia.org/wiki/Main_Page">Wikimedia
+              Commons</a></li>
+            </ul>
+          </section>
+
+          <section>
+            <h1 class="bar">Links</h1>
+            <ul >
+              <li><a href="https://cressint.cchmc.org/cressint/">CressInt public
+                web site</a></li>
+              <li>CressInt manuscript - <em>Current Plant Biology</em>, Sep 2015
+                <ul>
+                  <li>
+                    <a href="http://www.sciencedirect.com/science/article/pii/S2214662815000110">
+                      <em>CressInt: A user-friendly web resource for genome-scale
+                      exploration of gene regulation in Arabidopsis thaliana</em>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a href="http://www.cincinnatichildrens.org/research/divisions/a/genomics-etiology/labs/weirauch/default/">
+                  Weirauch Lab</a>
+              </li>
+              <li>
+                <a href="http://www.cincinnatichildrens.org/research/divisions/a/genomics-etiology/default/">
+                  Center for Autoimmune Genomics and Etiology</a>
+              </li>
+              <li>
+                <a href="http://www.cincinnatichildrens.org/research/cincinnati/default/">
+                  Children's Hospital Medical Center</a> (research home page)
+              </li>
+            </ul>
+          </section>
+
+        </section> <!-- Credits -->
+
+				<section data-background="img/blueridgekitties_3823220154.jpg">
+					<h1 class="bar">END(LICH)</h1>
+          <h2>vielen Dank für Ihre Zeit<br>und freundliche Aufmerksamkeit</h2>
+          <p><big><code>;)</code></big></p>
+				</section>
+
+
+      </div> <!--/.slides-->
+
+    </div> <!--/.reveal-->
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+        //parallaxBackgroundImage: 'img/solar_panels.jpg',
+        //parallaxBackgroundSize: '2100px 1500px',
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js',
+            condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js',
+            condition: function() {
+              return !!document.querySelector( '[data-markdown]' ); }
+          },
+					{ src: 'plugin/markdown/markdown.js',
+            condition: function() {
+              return !!document.querySelector( '[data-markdown]' ); }
+          },
+					{ src: 'plugin/highlight/highlight.js',
+            async: true, condition: function() {
+              return !!document.querySelector( 'pre code' ); },
+              callback: function() { hljs.initHighlightingOnLoad(); }
+          },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+      
+      // Remove background tint on all sections with 'embed' in their class list
+      Array.prototype.forEach.call(
+        document.getElementsByClassName('slide-background embed'),
+        function(e) { e.style.cssText = 'display:block;opacity:1;background-color:white'; }
+      );
+
+      //Reveal.addEventListener( 'embed', function() {
+      //    //alert('hi');
+      //}, false );
+
+      //Reveal.addEventListener( 'slidechanged', function( event ) {
+      //    // event.previousSlide, event.currentSlide, event.indexh, event.indexv
+      //    console.log(event.currentSlide);
+      //} );
+		</script>
+
+	</body>
+</html>
